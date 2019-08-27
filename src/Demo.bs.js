@@ -4,4 +4,7 @@
 
 console.log("Hello, BuckleScript and Reason!");
 
+var a = 8;
+
+exports.a = a;
 /*  Not a pure module */

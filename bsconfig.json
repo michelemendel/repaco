@@ -1,21 +1,27 @@
 {
   "name": "repaco",
   "version": "0.1.0",
-  "sources": {
-    "dir" : "src",
-    "subdirs" : true
-  },
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "__tests__",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
   "package-specs": {
     "module": "commonjs",
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": [
-
-  ],
   "warnings": {
-    "error" : "+101"
+    "error": "+101"
   },
   "namespace": true,
-  "refmt": 3
+  "refmt": 3,
+  "bs-dependencies": [],
+  "bs-dev-dependencies": ["@glennsl/bs-jest"]
 }
