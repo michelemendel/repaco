@@ -1,7 +1,10 @@
-let list_to_string = xs => Js.Array.joinWith("", Array.of_list(xs));
-let string_to_list = str => Array.to_list(Js.String.split("", str));
+open Utils;
 
-let aParser = (str: string): (bool, string) => {
+type result('a) =
+  | Success('a)
+  | Failure(string);
+
+let pchar = (charToMatch, str: string): (bool, string) => {
   let xs = string_to_list(str);
 
   Js.log(xs);
@@ -9,9 +12,14 @@ let aParser = (str: string): (bool, string) => {
 
   let res =
     switch (xs) {
-    | [] => (false, "")
-    | ["A", ...tail] => (true, list_to_string(tail))
-    | _ => (false, str)
+    | [] => (false, "No more input")
+    | [head, ...tail] when charToMatch == head => (
+        true,
+        list_to_string(tail),
+      )
+    | _ =>
+      let first = List.hd(xs);
+      (false, {j|Expecting $charToMatch, got $first|j});
     };
 
   Js.log2("RES:", res);

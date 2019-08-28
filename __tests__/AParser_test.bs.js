@@ -2,25 +2,25 @@
 'use strict';
 
 var Jest = require("@glennsl/bs-jest/src/jest.js");
-var Parser$Repaco = require("../src/Parser.bs.js");
+var AParser$Repaco = require("../src/AParser.bs.js");
 
 Jest.describe("Parse ABC", (function (param) {
         var input = "ABC";
-        var actual = Parser$Repaco.aParser(input);
+        var actual = AParser$Repaco.aParser(input);
         Jest.test("succeed with ABC", (function (param) {
                 return Jest.Expect[/* toEqual */12](/* tuple */[
                             true,
                             "BC"
                           ], Jest.Expect[/* expect */0](actual));
               }));
-        var actual$1 = Parser$Repaco.aParser("XBC");
+        var actual$1 = AParser$Repaco.aParser("XBC");
         Jest.test("fail with no matchable string", (function (param) {
                 return Jest.Expect[/* toEqual */12](/* tuple */[
                             false,
                             "XBC"
                           ], Jest.Expect[/* expect */0](actual$1));
               }));
-        var actual$2 = Parser$Repaco.aParser("");
+        var actual$2 = AParser$Repaco.aParser("");
         return Jest.test("fail with empty string", (function (param) {
                       return Jest.Expect[/* toEqual */12](/* tuple */[
                                   false,

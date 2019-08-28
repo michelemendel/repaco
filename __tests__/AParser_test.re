@@ -1,8 +1,8 @@
 open Jest;
-
+open AParser;
 describe("Parse ABC", () => {
   let input = "ABC";
-  let actual = Parser.aParser(input);
+  let actual = aParser(input);
   let expected = (true, "BC");
 
   Expect.(
@@ -12,7 +12,7 @@ describe("Parse ABC", () => {
   );
 
   let input = "XBC";
-  let actual = Parser.aParser(input);
+  let actual = aParser(input);
   let expected = (false, "XBC");
 
   Expect.(
@@ -22,7 +22,7 @@ describe("Parse ABC", () => {
   );
 
   let input = "";
-  let actual = Parser.aParser(input);
+  let actual = aParser(input);
   let expected = (false, "");
 
   Expect.(
