@@ -6,22 +6,24 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var Utils$Repaco = require("./Utils.bs.js");
 
-function pchar(charToMatch, str) {
-  var xs = Utils$Repaco.string_to_list(str);
-  if (xs) {
-    var head = xs[0];
-    if (charToMatch === head) {
-      return /* Success */Block.__(0, [/* tuple */[
-                  head,
-                  Utils$Repaco.list_to_string(xs[1])
-                ]]);
-    } else {
-      var first = List.hd(xs);
-      return /* Failure */Block.__(1, ["Expecting " + (String(charToMatch) + (", got " + (String(first) + "")))]);
-    }
-  } else {
-    return /* Failure */Block.__(1, ["No more input"]);
-  }
+function pchar(charToMatch) {
+  return (function (str) {
+      var xs = Utils$Repaco.string_to_list(str);
+      if (xs) {
+        var head = xs[0];
+        if (charToMatch === head) {
+          return /* Success */Block.__(0, [/* tuple */[
+                      head,
+                      Utils$Repaco.list_to_string(xs[1])
+                    ]]);
+        } else {
+          var first = List.hd(xs);
+          return /* Failure */Block.__(1, ["Expecting " + (String(charToMatch) + (", got " + (String(first) + "")))]);
+        }
+      } else {
+        return /* Failure */Block.__(1, ["No more input"]);
+      }
+    });
 }
 
 function andThen(p1, p2, input) {

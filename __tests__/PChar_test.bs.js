@@ -3,12 +3,14 @@
 
 var Jest = require("@glennsl/bs-jest/src/jest.js");
 var Block = require("bs-platform/lib/js/block.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var Parser$Repaco = require("../src/Parser.bs.js");
 
 Jest.describe("Parse ABC with char to match A", (function (param) {
         var input = "ABC";
         var charToMatch = "A";
-        var actual = Parser$Repaco.pchar(charToMatch, input);
+        var parseA = Parser$Repaco.pchar(charToMatch);
+        var actual = Curry._1(parseA, input);
         var expected = /* Success */Block.__(0, [/* tuple */[
               charToMatch,
               "BC"
@@ -20,7 +22,8 @@ Jest.describe("Parse ABC with char to match A", (function (param) {
 
 Jest.describe("Parse XBC with char to match A", (function (param) {
         var charToMatch = "A";
-        var actual = Parser$Repaco.pchar(charToMatch, "XBC");
+        var parseA = Parser$Repaco.pchar(charToMatch);
+        var actual = Curry._1(parseA, "XBC");
         var expected = /* Failure */Block.__(1, ["Expecting " + (String(charToMatch) + ", got X")]);
         return Jest.test("fail with no matchable string", (function (param) {
                       return Jest.Expect[/* toEqual */12](expected, Jest.Expect[/* expect */0](actual));
@@ -28,8 +31,8 @@ Jest.describe("Parse XBC with char to match A", (function (param) {
       }));
 
 Jest.describe("Parse empty string with char to match A", (function (param) {
-        var charToMatch = "A";
-        var actual = Parser$Repaco.pchar(charToMatch, "");
+        var parseA = Parser$Repaco.pchar("A");
+        var actual = Curry._1(parseA, "");
         return Jest.test("fail with empty string", (function (param) {
                       return Jest.Expect[/* toEqual */12](/* Failure */Block.__(1, ["No more input"]), Jest.Expect[/* expect */0](actual));
                     }));
