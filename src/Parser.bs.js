@@ -2,33 +2,27 @@
 'use strict';
 
 var List = require("bs-platform/lib/js/list.js");
+var Block = require("bs-platform/lib/js/block.js");
 var Utils$Repaco = require("./Utils.bs.js");
 
-function pchar(charToMatch, str) {
-  var xs = Utils$Repaco.string_to_list(str);
-  console.log(xs);
-  var res;
-  if (xs) {
-    if (charToMatch === xs[0]) {
-      res = /* tuple */[
-        true,
-        Utils$Repaco.list_to_string(xs[1])
-      ];
-    } else {
-      var first = List.hd(xs);
-      res = /* tuple */[
-        false,
-        "Expecting " + (String(charToMatch) + (", got " + (String(first) + "")))
-      ];
-    }
-  } else {
-    res = /* tuple */[
-      false,
-      "No more input"
-    ];
-  }
-  console.log("RES:", res);
-  return res;
+function pchar(charToMatch) {
+  return (function (str) {
+      var xs = Utils$Repaco.string_to_list(str);
+      if (xs) {
+        var head = xs[0];
+        if (charToMatch === head) {
+          return /* Success */Block.__(0, [
+                    head,
+                    Utils$Repaco.list_to_string(xs[1])
+                  ]);
+        } else {
+          var first = List.hd(xs);
+          return /* Failure */Block.__(1, ["Expecting " + (String(charToMatch) + (", got " + (String(first) + "")))]);
+        }
+      } else {
+        return /* Failure */Block.__(1, ["No more input"]);
+      }
+    });
 }
 
 exports.pchar = pchar;

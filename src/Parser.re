@@ -1,28 +1,21 @@
 open Utils;
 
 type result('a) =
-  | Success('a)
+  | Success(string, 'a)
   | Failure(string);
 
-let pchar = (charToMatch, str: string): (bool, string) => {
-  let xs = string_to_list(str);
+/* type t = Parser; */
 
-  Js.log(xs);
-  /* print_endline(Js.Array.joinWith("", xs)); */
-
-  let res =
-    switch (xs) {
-    | [] => (false, "No more input")
-    | [head, ...tail] when charToMatch == head => (
-        true,
-        list_to_string(tail),
-      )
-    | _ =>
-      let first = List.hd(xs);
-      (false, {j|Expecting $charToMatch, got $first|j});
+let pchar = (charToMatch: string) => {   
+    let inner = (str:string): result('a) => {
+        let xs = string_to_list(str);
+        switch (xs) {
+        | [] => Failure("No more input")
+        | [head, ...tail] when charToMatch == head =>
+        Success(head, list_to_string(tail))
+        | _ => let first = List.hd(xs);
+        Failure({j|Expecting $charToMatch, got $first|j});
+        }
     };
-
-  Js.log2("RES:", res);
-
-  res;
-};
+inner;
+}
