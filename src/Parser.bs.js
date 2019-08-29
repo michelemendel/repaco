@@ -3,27 +3,47 @@
 
 var List = require("bs-platform/lib/js/list.js");
 var Block = require("bs-platform/lib/js/block.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var Utils$Repaco = require("./Utils.bs.js");
 
-function pchar(charToMatch) {
-  return (function (str) {
-      var xs = Utils$Repaco.string_to_list(str);
-      if (xs) {
-        var head = xs[0];
-        if (charToMatch === head) {
-          return /* Success */Block.__(0, [
-                    head,
-                    Utils$Repaco.list_to_string(xs[1])
-                  ]);
-        } else {
-          var first = List.hd(xs);
-          return /* Failure */Block.__(1, ["Expecting " + (String(charToMatch) + (", got " + (String(first) + "")))]);
-        }
-      } else {
-        return /* Failure */Block.__(1, ["No more input"]);
-      }
-    });
+function pchar(charToMatch, str) {
+  var xs = Utils$Repaco.string_to_list(str);
+  if (xs) {
+    var head = xs[0];
+    if (charToMatch === head) {
+      return /* Success */Block.__(0, [/* tuple */[
+                  head,
+                  Utils$Repaco.list_to_string(xs[1])
+                ]]);
+    } else {
+      var first = List.hd(xs);
+      return /* Failure */Block.__(1, ["Expecting " + (String(charToMatch) + (", got " + (String(first) + "")))]);
+    }
+  } else {
+    return /* Failure */Block.__(1, ["No more input"]);
+  }
+}
+
+function andThen(p1, p2, input) {
+  var match = Curry._1(p1, input);
+  if (match.tag) {
+    return /* Failure */Block.__(1, [match[0]]);
+  } else {
+    var match$1 = match[0];
+    var match$2 = Curry._1(p2, match$1[1]);
+    if (match$2.tag) {
+      return /* Failure */Block.__(1, [match$2[0]]);
+    } else {
+      var match$3 = match$2[0];
+      return /* Success */Block.__(0, [/* tuple */[
+                  match$1[0],
+                  match$3[0],
+                  match$3[1]
+                ]]);
+    }
+  }
 }
 
 exports.pchar = pchar;
+exports.andThen = andThen;
 /* No side effect */

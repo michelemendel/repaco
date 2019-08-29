@@ -8,7 +8,7 @@ describe("Parse ABC with char to match A", () => {
   let parseA = pchar(charToMatch);
 
   let actual = parseA(input);
-  let expected = Success(charToMatch, remaining);
+  let expected = Success((charToMatch, remaining));
 
   Expect.(
     test("succeed with " ++ input, () =>
