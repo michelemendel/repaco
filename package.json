@@ -17,5 +17,8 @@
     "@glennsl/bs-jest": "^0.4.9",
     "bs-platform": "^5.0.6",
     "jest": "^24.9.0"
+  },
+  "dependencies": {
+    "tablecloth-bucklescript": "0.0.6"
   }
 }

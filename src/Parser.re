@@ -9,6 +9,7 @@ type parser('a) = string => result('a);
 let pchar = (charToMatch: string): parser('a) => {
   str => {
     let xs = string_to_list(str);
+
     switch (xs) {
     | [] => Failure("No more input")
     | [head, ...tail] when charToMatch == head => Success((head, list_to_string(tail)))
