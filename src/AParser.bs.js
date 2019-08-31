@@ -5,21 +5,24 @@ var Utils$Repaco = require("./Utils.bs.js");
 
 function aParser(str) {
   var xs = Utils$Repaco.string_to_list(str);
-  console.log(xs);
-  var res = xs ? (
-      xs[0] === "A" ? /* tuple */[
-          true,
-          Utils$Repaco.list_to_string(xs[1])
-        ] : /* tuple */[
-          false,
-          str
-        ]
-    ) : /* tuple */[
-      false,
-      ""
-    ];
-  console.log("RES:", res);
-  return res;
+  if (xs) {
+    if (xs[0] === "A") {
+      return /* tuple */[
+              true,
+              Utils$Repaco.list_to_string(xs[1])
+            ];
+    } else {
+      return /* tuple */[
+              false,
+              str
+            ];
+    }
+  } else {
+    return /* tuple */[
+            false,
+            ""
+          ];
+  }
 }
 
 exports.aParser = aParser;
