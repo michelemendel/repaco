@@ -3,20 +3,23 @@
 
 var Jest = require("@glennsl/bs-jest/src/jest.js");
 var Block = require("bs-platform/lib/js/block.js");
-var Parser$Repaco = require("../src/Parser.bs.js");
+var Parsers$Repaco = require("../src/Parsers.bs.js");
+var Combinators$Repaco = require("../src/Combinators.bs.js");
 
-Jest.describe("Success with sequence of two parsers", (function (param) {
+Jest.describe("Success with andThen of two parsers", (function (param) {
         var input = "ABCDEF";
         var parseA = function (param) {
-          return Parser$Repaco.pchar("A", param);
+          return Parsers$Repaco.pChar("A", param);
         };
         var parseB = function (param) {
-          return Parser$Repaco.pchar("B", param);
+          return Parsers$Repaco.pChar("B", param);
         };
-        var actual = Parser$Repaco.$neg$great$great$neg(parseA, parseB, input);
+        var actual = Combinators$Repaco.$neg$great$great$neg(parseA, parseB, input);
         var expected = /* Success */Block.__(0, [/* tuple */[
-              "A",
-              "B",
+              /* tuple */[
+                "A",
+                "B"
+              ],
               "CDEF"
             ]]);
         return Jest.test("succeed with ABCDEF", (function (param) {
@@ -24,35 +27,67 @@ Jest.describe("Success with sequence of two parsers", (function (param) {
                     }));
       }));
 
-Jest.describe("Failure with sequence of two parsers on first character", (function (param) {
+Jest.describe("Success with andThen of three parsers", (function (param) {
+        var input = "ABCDEF";
+        var parseA = function (param) {
+          return Parsers$Repaco.pChar("A", param);
+        };
+        var parseB = function (param) {
+          return Parsers$Repaco.pChar("B", param);
+        };
+        var parseC = function (param) {
+          return Parsers$Repaco.pChar("C", param);
+        };
+        var parseAThenBThenC = function (param) {
+          return Combinators$Repaco.$neg$great$great$neg((function (param) {
+                        return Combinators$Repaco.$neg$great$great$neg(parseA, parseB, param);
+                      }), parseC, param);
+        };
+        var actual = parseAThenBThenC(input);
+        var expected = /* Success */Block.__(0, [/* tuple */[
+              /* tuple */[
+                /* tuple */[
+                  "A",
+                  "B"
+                ],
+                "C"
+              ],
+              "DEF"
+            ]]);
+        return Jest.test("succeed with ABCDEF", (function (param) {
+                      return Jest.Expect[/* toEqual */12](expected, Jest.Expect[/* expect */0](actual));
+                    }));
+      }));
+
+Jest.describe("Fail with sequence of two parsers on first character", (function (param) {
         var input = "ZBCDEF";
         var firstChar = input.charAt(0);
         var charToMatchA = "A";
         var parseA = function (param) {
-          return Parser$Repaco.pchar(charToMatchA, param);
+          return Parsers$Repaco.pChar(charToMatchA, param);
         };
         var parseB = function (param) {
-          return Parser$Repaco.pchar("B", param);
+          return Parsers$Repaco.pChar("B", param);
         };
-        var actual = Parser$Repaco.$neg$great$great$neg(parseA, parseB, input);
-        var expected = /* Failure */Block.__(1, ["Expecting " + (String(charToMatchA) + (", got " + (String(firstChar) + "")))]);
+        var actual = Combinators$Repaco.$neg$great$great$neg(parseA, parseB, input);
+        var expected = /* Fail */Block.__(1, ["Expecting " + (String(charToMatchA) + (", got " + (String(firstChar) + "")))]);
         return Jest.test("fail with ZBCDEF", (function (param) {
                       return Jest.Expect[/* toEqual */12](expected, Jest.Expect[/* expect */0](actual));
                     }));
       }));
 
-Jest.describe("Failure with sequence of two parsers on second character", (function (param) {
+Jest.describe("Fail with sequence of two parsers on second character", (function (param) {
         var input = "AZCDEF";
         var secondChar = input.charAt(1);
         var charToMatchB = "B";
         var parseA = function (param) {
-          return Parser$Repaco.pchar("A", param);
+          return Parsers$Repaco.pChar("A", param);
         };
         var parseB = function (param) {
-          return Parser$Repaco.pchar(charToMatchB, param);
+          return Parsers$Repaco.pChar(charToMatchB, param);
         };
-        var actual = Parser$Repaco.$neg$great$great$neg(parseA, parseB, input);
-        var expected = /* Failure */Block.__(1, ["Expecting " + (String(charToMatchB) + (", got " + (String(secondChar) + "")))]);
+        var actual = Combinators$Repaco.$neg$great$great$neg(parseA, parseB, input);
+        var expected = /* Fail */Block.__(1, ["Expecting " + (String(charToMatchB) + (", got " + (String(secondChar) + "")))]);
         return Jest.test("fail with AZCDEF", (function (param) {
                       return Jest.Expect[/* toEqual */12](expected, Jest.Expect[/* expect */0](actual));
                     }));
