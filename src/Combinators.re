@@ -1,6 +1,6 @@
 open Parsers;
 
-let andThen = (parser1: parser('a), parser2: parser('b), input): result('c) =>
+let andThen = (parser1, parser2, input) =>
   switch (parser1(input)) {
   | Fail(err) => Fail(err)
   | Success((value1, remaining1)) =>
@@ -14,7 +14,7 @@ let andThen = (parser1: parser('a), parser2: parser('b), input): result('c) =>
 /* AndThen infix operator */
 let (->>-) = andThen;
 
-let orElse = (parser1: parser('a), parser2: parser('b), input): result('c) =>
+let orElse = (parser1, parser2, input) =>
   switch (parser1(input)) {
   | Success((value1, remaining)) => Success((value1, remaining))
   | Fail(_) =>

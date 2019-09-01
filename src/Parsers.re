@@ -6,7 +6,7 @@ type result('a) =
 
 type parser('a) = string => result('a);
 
-let pChar = (charToMatch: string): parser((string, string)) =>
+let pChar = (charToMatch: string): parser('a) =>
   str => {
     let xs = string_to_list(str);
 
