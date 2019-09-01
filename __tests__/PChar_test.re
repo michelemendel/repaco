@@ -3,12 +3,9 @@ open Parsers;
 
 describe("Parse ABC with char to match A", () => {
   let input = "ABC";
-  let charToMatch = "A";
-  let remaining = "BC";
-  let parseA = pChar(charToMatch);
-
+  let parseA = pChar("A");
   let actual = parseA(input);
-  let expected = Success((charToMatch, remaining));
+  let expected = Success(["A"], "BC");
 
   Expect.(
     test("succeed with " ++ input, () =>
@@ -19,11 +16,9 @@ describe("Parse ABC with char to match A", () => {
 
 describe("Parse XBC with char to match A", () => {
   let input = "XBC";
-  let charToMatch = "A";
-  let parseA = pChar(charToMatch);
-
+  let parseA = pChar("A");
   let actual = parseA(input);
-  let expected = Fail({j|Expecting $charToMatch, got X|j});
+  let expected = Fail("Expecting A, got X");
 
   Expect.(
     test("fail with no matchable string", () =>
@@ -34,9 +29,7 @@ describe("Parse XBC with char to match A", () => {
 
 describe("Parse empty string with char to match A", () => {
   let input = "";
-  let charToMatch = "A";
-  let parseA = pChar(charToMatch);
-
+  let parseA = pChar("A");
   let actual = parseA(input);
   let expected = Fail("No more input");
 

@@ -2,18 +2,14 @@ open Jest;
 open Parsers;
 open Combinators;
 
+let parseA = pChar("A");
+let parseB = pChar("B");
+let parseC = pChar("C");
+
 describe("Success with andThen of two parsers", () => {
   let input = "ABCDEF";
-  let charToMatchA = "A";
-  let charToMatchB = "B";
-  let remaining = "CDEF";
-
-  let parseA = pChar(charToMatchA);
-  let parseB = pChar(charToMatchB);
-  let parseAThenB = parseA ->>- parseB;
-
-  let actual = parseAThenB(input);
-  let expected = Success((("A", "B"), remaining));
+  let actual = (parseA ->>- parseB)(input);
+  let expected = Success(["A", "B"], "CDEF");
 
   Expect.(
     test("succeed with " ++ input, () =>
@@ -24,18 +20,8 @@ describe("Success with andThen of two parsers", () => {
 
 describe("Success with andThen of three parsers", () => {
   let input = "ABCDEF";
-  let charToMatchA = "A";
-  let charToMatchB = "B";
-  let charToMatchC = "C";
-  let remaining = "DEF";
-
-  let parseA = pChar(charToMatchA);
-  let parseB = pChar(charToMatchB);
-  let parseC = pChar(charToMatchC);
-  let parseAThenBThenC = parseA ->>- parseB ->>- parseC;
-
-  let actual = parseAThenBThenC(input);
-  let expected = Success(((("A", "B"), "C"), remaining));
+  let actual = (parseA ->>- parseB ->>- parseC)(input);
+  let expected = Success(["A", "B", "C"], "DEF");
 
   Expect.(
     test("succeed with " ++ input, () =>
@@ -46,16 +32,8 @@ describe("Success with andThen of three parsers", () => {
 
 describe("Fail with sequence of two parsers on first character", () => {
   let input = "ZBCDEF";
-  let firstChar = Js.String.charAt(0, input);
-  let charToMatchA = "A";
-  let charToMatchB = "B";
-
-  let parseA = pChar(charToMatchA);
-  let parseB = pChar(charToMatchB);
-  let parseAThenB = parseA ->>- parseB;
-
-  let actual = parseAThenB(input);
-  let expected = Fail({j|Expecting $charToMatchA, got $firstChar|j});
+  let actual = (parseA ->>- parseB)(input);
+  let expected = Fail("Expecting A, got Z");
 
   Expect.(
     test("fail with " ++ input, () =>
@@ -66,16 +44,8 @@ describe("Fail with sequence of two parsers on first character", () => {
 
 describe("Fail with sequence of two parsers on second character", () => {
   let input = "AZCDEF";
-  let secondChar = Js.String.charAt(1, input);
-  let charToMatchA = "A";
-  let charToMatchB = "B";
-
-  let parseA = pChar(charToMatchA);
-  let parseB = pChar(charToMatchB);
-  let parseAThenB = parseA ->>- parseB;
-
-  let actual = parseAThenB(input);
-  let expected = Fail({j|Expecting $charToMatchB, got $secondChar|j});
+  let actual = (parseA ->>- parseB)(input);
+  let expected = Fail("Expecting B, got Z");
 
   Expect.(
     test("fail with " ++ input, () =>
