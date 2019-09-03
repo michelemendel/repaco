@@ -22,3 +22,20 @@ let pChar = (charToMatch: string): parser('a) =>
       Fail({j|Expecting $charToMatch, got $first|j});
     };
   };
+
+let mapP = (fn: values('a) => 'b, parser: parser('a)): parser('b) =>
+  input =>
+    switch (parser(input)) {
+    | Success(values, remaining) =>
+      let newVal = fn(values);
+      Success([newVal], remaining);
+    | Fail(err) => Fail(err)
+    /* | _ => Fail("Something went wrong") */
+    };
+
+/* MapP infix operator */
+let (<!>) = mapP;
+
+/* Flippen arguments of MapP */
+/* I don't know why we need the version above (<!>) */
+let (|>>) = (x, f) => mapP(f, x);
