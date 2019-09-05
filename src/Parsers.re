@@ -35,6 +35,9 @@ let mapP = (fn: values('a) => 'b, parser: parser('a)): parser('b) =>
 /* MapP infix operator */
 let (<!>) = mapP;
 
-/* Flippen arguments of MapP */
+/* Flipped arguments of MapP */
 /* I don't know why we need the version above (<!>) */
 let (|>>) = (x, f) => mapP(f, x);
+
+/* Ignore the input and return x */
+let returnP = (x: 'a): parser('b) => input => Success([x], input);
