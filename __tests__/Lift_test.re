@@ -6,7 +6,7 @@ describe("Success with returnP", () => {
   let x = "A";
   let remaining = "rem";
 
-  let expected = Success([x], remaining);
+  let expected = Success(x, remaining);
   let actualP = returnP(x);
   let actual = actualP(remaining);
 

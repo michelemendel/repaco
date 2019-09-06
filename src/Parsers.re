@@ -1,14 +1,20 @@
 open Utils;
 
+/*  */
 type values('a) = list('a);
+
+/*  */
 type remaining = string;
 
+/*  */
 type result('a) =
-  | Success('a, remaining)
+  | Success(list('a), remaining)
   | Fail(string);
 
+/*  */
 type parser('a) = string => result('a);
 
+/* Parsers a single character */
 let pChar = (charToMatch: string): parser('a) =>
   str => {
     let xs = list_of_string(str);
@@ -22,6 +28,7 @@ let pChar = (charToMatch: string): parser('a) =>
     };
   };
 
+/* Makes our parser a functor */
 let mapP = (fn: 'a => 'b, parser: parser('a)): parser('b) =>
   input =>
     switch (parser(input)) {
