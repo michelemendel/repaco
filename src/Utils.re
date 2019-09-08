@@ -1,6 +1,10 @@
 let string_of_list = (xs: list(string)): string =>
   Js.Array.joinWith("", Array.of_list(xs));
 
+let string_of_list_as_list = (xs: list(string)): list(string) => [
+  Js.Array.joinWith("", Array.of_list(xs)),
+];
+
 let list_of_string = (str: string): list(string) =>
   Array.to_list(Js.String.split("", str));
 

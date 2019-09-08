@@ -28,4 +28,5 @@ let orElse = (parser1: parser('a), parser2: parser('b)): parser('c) =>
 /* OrElse infix operator */
 let (<|>) = orElse;
 
-let choice = listOfParsers => List.fold_left(orElse, pChar(""), listOfParsers);
+let choice = listOfParsers =>
+  List.fold_left(orElse, pChar(""), listOfParsers);
