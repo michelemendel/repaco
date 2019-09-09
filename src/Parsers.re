@@ -11,7 +11,7 @@ let genericErrorMessage = (msg: string) => "Something went wrong:" ++ msg;
 
 /*  */
 type result('a) =
-  | Success(list('a), remaining)
+  | Success('a, remaining)
   | Fail(message);
 
 /*  */
@@ -34,15 +34,13 @@ let pChar = (charToMatch: string): parser('a) =>
 
 /* Makes our parser a functor */
 /* type mapPType('a, 'b, 'c) = ('a => 'b, parser('a, 'c)) => parser('b, 'c); */
-let mapP = (fn: 'a => 'b, parser: parser('a)): parser('b) =>
-  input =>
-    switch (parser(input)) {
-    | Success([values], remaining) =>
-      let newVal = fn(values);
-      Success([newVal], remaining);
-    | Fail(err) => Fail(err)
-    | _ => Fail(genericErrorMessage(""))
-    };
+let mapP = (fn: 'a => 'b, parser: parser('a), input): result('b) =>
+  switch (parser(input)) {
+  | Success(values, remaining) =>
+    let newVal = fn(values);
+    Success(newVal, remaining);
+  | Fail(err) => Fail(err)
+  };
 
 /* MapP infix operator */
 let (<!>) = mapP;

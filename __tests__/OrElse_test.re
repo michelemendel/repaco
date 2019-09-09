@@ -1,5 +1,6 @@
 open Jest;
 open Parsers;
+open ParsersExtended;
 open Combinators;
 
 let parseA = pChar("A");

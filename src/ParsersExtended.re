@@ -2,10 +2,16 @@ open Parsers;
 open Combinators;
 /* open Utils; */
 
+/* Choice */
+let choice = listOfParsers =>
+  List.fold_left(orElse, pChar(""), listOfParsers);
+
 let anyOf = listOfCharacters => listOfCharacters |> List.map(pChar) |> choice;
 
 let parseUppercase = anyOf(Constants.uppercaseChars);
+
 let parseLowercase = anyOf(Constants.lowercaseChars);
+
 let parseDigit = anyOf(Constants.digits);
 
 /*
@@ -15,7 +21,7 @@ let parseDigit = anyOf(Constants.digits);
 /* Ignore the input and return x */
 /* The comment above is from the blog, and I don't understand how "input is ignored." */
 type returnPType('a) = 'a => parser('a);
-let returnP: returnPType('a) = (x, _) => Success([x], "");
+let returnP: returnPType('a) = (x, input) => Success(x, input);
 
 /* Makes our parser an applicative */
 type applyPType('a, 'b) = (parser('a), parser('b)) => parser('b);
