@@ -4,7 +4,7 @@ open Parsers;
 describe("Parse ABC with char to match A", () => {
   let input = "ABC";
   let parseA = pChar("A");
-  let actual = parseA(input);
+  let actual = run(parseA, input);
   let expected = Success(["A"], "BC");
 
   Expect.(
@@ -17,7 +17,7 @@ describe("Parse ABC with char to match A", () => {
 describe("Parse XBC with char to match A", () => {
   let input = "XBC";
   let parseA = pChar("A");
-  let actual = parseA(input);
+  let actual = run(parseA, input);
   let expected = Fail("Expecting A, got X");
 
   Expect.(
@@ -30,7 +30,7 @@ describe("Parse XBC with char to match A", () => {
 describe("Parse empty string with char to match A", () => {
   let input = "";
   let parseA = pChar("A");
-  let actual = parseA(input);
+  let actual = run(parseA, input);
   let expected = Fail("No more input");
 
   Expect.(

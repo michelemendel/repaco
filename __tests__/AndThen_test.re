@@ -8,7 +8,7 @@ let parseC = pChar("C");
 
 describe("Success with andThen of two parsers", () => {
   let input = "ABCDEF";
-  let actual = (parseA ->>- parseB)(input);
+  let actual = run(parseA ->>- parseB, input);
   let expected = Success(["A", "B"], "CDEF");
 
   Expect.(
@@ -20,7 +20,7 @@ describe("Success with andThen of two parsers", () => {
 
 describe("Success with andThen of three parsers", () => {
   let input = "ABCDEF";
-  let actual = (parseA ->>- parseB ->>- parseC)(input);
+  let actual = run(parseA ->>- parseB ->>- parseC, input);
   let expected = Success(["A", "B", "C"], "DEF");
 
   Expect.(
@@ -32,7 +32,7 @@ describe("Success with andThen of three parsers", () => {
 
 describe("Fail with sequence of two parsers on first character", () => {
   let input = "ZBCDEF";
-  let actual = (parseA ->>- parseB)(input);
+  let actual = run(parseA ->>- parseB, input);
   let expected = Fail("Expecting A, got Z");
 
   Expect.(
@@ -44,7 +44,7 @@ describe("Fail with sequence of two parsers on first character", () => {
 
 describe("Fail with sequence of two parsers on second character", () => {
   let input = "AZCDEF";
-  let actual = (parseA ->>- parseB)(input);
+  let actual = run(parseA ->>- parseB, input);
   let expected = Fail("Expecting B, got Z");
 
   Expect.(

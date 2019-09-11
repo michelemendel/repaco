@@ -20,7 +20,7 @@ let parseDigit = anyOf(Constants.digits);
 
 /* Ignore the input and return x */
 /* The comment above is from the blog, and I don't understand how "input is ignored." */
-type returnPType('a) = 'a => parser('a);
+type returnPType('a) = ('a, remaining) => result('a);
 let returnP: returnPType('a) = (x, input) => Success(x, input);
 
 /* Makes our parser an applicative */

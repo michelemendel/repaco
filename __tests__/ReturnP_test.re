@@ -17,7 +17,7 @@ describe("Success with returnP", () => {
 
 describe("Another version with success with returnP", () => {
   let parseA = pChar("A");
-  let resA = parseA("ABC");
+  let resA = run(parseA, "ABC");
   let parserB = returnP(["A"]);
   let resB = parserB("BC");
 

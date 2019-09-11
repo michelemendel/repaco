@@ -10,7 +10,7 @@ let parseC = pChar("C");
 describe(
   "Success with orElse (and choice) of two parsers, success on first", () => {
   let input = "ABCDEF";
-  let actual = (parseA <|> parseB)(input);
+  let actual = run(parseA <|> parseB, input);
   let expected = Success(["A"], "BCDEF");
 
   Expect.(
@@ -19,7 +19,7 @@ describe(
     )
   );
 
-  let actual = choice([parseA, parseB], input);
+  let actual = run(choice([parseA, parseB]), input);
 
   Expect.(
     test("succeed (using choice) " ++ input, () =>
@@ -31,7 +31,7 @@ describe(
 describe(
   "Success with orElse (and choice) of two parsers, success on second", () => {
   let input = "BCDEF";
-  let actual = (parseA <|> parseB)(input);
+  let actual = run(parseA <|> parseB, input);
   let expected = Success(["B"], "CDEF");
 
   Expect.(
@@ -40,7 +40,7 @@ describe(
     )
   );
 
-  let actual = choice([parseA, parseB], input);
+  let actual = run(choice([parseA, parseB]), input);
 
   Expect.(
     test("succeed (using choice) " ++ input, () =>
@@ -52,7 +52,7 @@ describe(
 describe("Success with andThen and orElse (and choice) of three parsers", () => {
   let input = "ABCDEF";
   let parseAThenBOrC = parseA ->>- (parseB <|> parseC);
-  let actual = parseAThenBOrC(input);
+  let actual = run(parseAThenBOrC, input);
   let expected = Success(["A", "B"], "CDEF");
 
   Expect.(
@@ -61,7 +61,7 @@ describe("Success with andThen and orElse (and choice) of three parsers", () => 
     )
   );
 
-  let actual = (parseA ->>- choice([parseB, parseC]))(input);
+  let actual = run(parseA ->>- choice([parseB, parseC]), input);
 
   Expect.(
     test("succeed (using choice) " ++ input, () =>
@@ -75,7 +75,7 @@ describe(
   () => {
     let input = "ACDEF";
     let parseAThenBOrC = parseA ->>- (parseB <|> parseC);
-    let actual = parseAThenBOrC(input);
+    let actual = run(parseAThenBOrC, input);
     let expected = Success(["A", "C"], "DEF");
 
     Expect.(
@@ -84,7 +84,7 @@ describe(
       )
     );
 
-    let actual = (parseA ->>- choice([parseB, parseC]))(input);
+    let actual = run(parseA ->>- choice([parseB, parseC]), input);
 
     Expect.(
       test("succeed (using choice) " ++ input, () =>
@@ -99,7 +99,7 @@ describe(
   () => {
     let input = "XBCDEF";
     let parseAThenBOrC = parseA ->>- (parseB <|> parseC);
-    let actual = parseAThenBOrC(input);
+    let actual = run(parseAThenBOrC, input);
     let expected = Fail({j|Expecting A, got X|j});
 
     Expect.(
@@ -108,7 +108,7 @@ describe(
       )
     );
 
-    let actual = (parseA ->>- choice([parseB, parseC]))(input);
+    let actual = run(parseA ->>- choice([parseB, parseC]), input);
 
     Expect.(
       test("fail (using choice) " ++ input, () =>
@@ -123,7 +123,7 @@ describe(
   () => {
     let input = "AXCDEF";
     let parseAThenBOrC = parseA ->>- (parseB <|> parseC);
-    let actual = parseAThenBOrC(input);
+    let actual = run(parseAThenBOrC, input);
     let expected = Fail("Expecting C, got X"); /* Should say "Expecting B, got X" */
 
     Expect.(
@@ -132,7 +132,7 @@ describe(
       )
     );
 
-    let actual = (parseA ->>- choice([parseB, parseC]))(input);
+    let actual = run(parseA ->>- choice([parseB, parseC]), input);
 
     Expect.(
       test("fail (using choice) " ++ input, () =>

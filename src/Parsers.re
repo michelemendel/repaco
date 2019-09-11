@@ -15,11 +15,17 @@ type result('a) =
   | Fail(message);
 
 /*  */
-type parser('a) = string => result('a);
+type parser('a) =
+  | Parser(string => result('a));
+
+let run = (parser, input) => {
+  let Parser(innerFn) = parser;
+  innerFn(input);
+};
 
 /* Parses a single character */
-let pChar = (charToMatch: string): parser('a) =>
-  input => {
+let pChar = charToMatch => {
+  let pfn = input => {
     let xs = list_of_string(input);
 
     switch (xs) {
@@ -32,18 +38,21 @@ let pChar = (charToMatch: string): parser('a) =>
     };
   };
 
-/* Makes our parser a functor */
-/* type mapPType('a, 'b, 'c) = ('a => 'b, parser('a, 'c)) => parser('b, 'c); */
-let mapP = (fn: 'a => 'b, parser: parser('a), input): result('b) =>
-  switch (parser(input)) {
-  | Success(values, remaining) =>
-    let newVal = fn(values);
-    Success(newVal, remaining);
-  | Fail(err) => Fail(err)
-  };
+  Parser(pfn);
+};
 
-/* MapP infix operator */
-let (<!>) = mapP;
+/* Makes our parser a functor */
+let mapP = (fn: 'a => 'b, parser: parser('a)): parser('b) => {
+  let pfn = input =>
+    switch (run(parser, input)) {
+    | Success(values, remaining) =>
+      let newVal = fn(values);
+      Success(newVal, remaining);
+    | Fail(err) => Fail(err)
+    };
+
+  Parser(pfn);
+};
 
 /* Flipped arguments of MapP */
 /* I don't know why we need the version above (<!>) */
