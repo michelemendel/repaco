@@ -18,11 +18,21 @@ module type Functor = {
   let fmap: ('a => 'b, t('a)) => t('b);
 };
 
+module type Functor2 = {
+  type t('a, 'b);
+  let fmap: ('a0 => 'b, t('a, 'a0)) => t('a, 'b);
+};
+
 module TestFunctor = (F: Functor) => {
-  open F;
-  let test_id = x => assert(fmap(id, x) == x);
+  let test_id = x => assert(F.fmap(id, x) == x);
   let test_compose = (f, g, x) =>
-    assert(fmap(f <.> g, x) == fmap(f, fmap(g, x)));
+    assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
+};
+
+module TestEitherFunctor = (F: Functor2) => {
+  let test_id = x => assert(F.fmap(id, x) == x);
+  let test_compose = (f, g, x) =>
+    assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
 };
 
 module ListF: Functor with type t('a) = list('a) = {
@@ -38,16 +48,16 @@ module OptionF: Functor with type t('a) = option('a) = {
     | None => None;
 };
 
-type res('a) =
-  | Ok('a)
-  | Error(string);
+type either('a, 'b) =
+  | Left('a)
+  | Right('b);
 
-module ResultF: Functor with type t('a) = res('a) = {
-  type t('a) = res('a);
+module EitherF: Functor2 with type t('a, 'b) = either('a, 'b) = {
+  type t('a, 'b) = either('a, 'b);
   let fmap = f =>
     fun
-    | Ok(x) => Ok(f(x))
-    | Error(err) => Error(err);
+    | Left(err) => Left(err)
+    | Right(x) => Right(f(x));
 };
 
 module ParserF: Functor with type t('a) = result('a) = {
