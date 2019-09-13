@@ -25,14 +25,12 @@ module type Functor2 = {
 
 module TestFunctor = (F: Functor) => {
   let test_id = x => assert(F.fmap(id, x) == x);
-  let test_compose = (f, g, x) =>
-    assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
+  let test_compose = (f, g, x) => assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
 };
 
 module TestEitherFunctor = (F: Functor2) => {
   let test_id = x => assert(F.fmap(id, x) == x);
-  let test_compose = (f, g, x) =>
-    assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
+  let test_compose = (f, g, x) => assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
 };
 
 module ListF: Functor with type t('a) = list('a) = {
@@ -42,10 +40,11 @@ module ListF: Functor with type t('a) = list('a) = {
 
 module OptionF: Functor with type t('a) = option('a) = {
   type t('a) = option('a);
-  let fmap = f =>
-    fun
+  let fmap = (f, a) =>
+    switch (a) {
     | Some(x) => Some(f(x))
-    | None => None;
+    | None => None
+    };
 };
 
 type either('a, 'b) =

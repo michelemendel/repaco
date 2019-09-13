@@ -3,13 +3,12 @@ open Parsers;
 open ParsersExtended;
 open Combinators;
 open Utils;
-open TC.ParserF;
+/* open TC.ParserF */
 
 describe("Success with mapP and three parseDigit", () => {
   let input = "123A";
   let expected = Success("123", "A");
-  let parseThreeDigitsAsString =
-    parseDigit ->>- parseDigit ->>- parseDigit |>> string_of_list;
+  let parseThreeDigitsAsString = parseDigit ->>- parseDigit ->>- parseDigit |>> string_of_list;
   let actual = run(parseThreeDigitsAsString, input);
 
   let p1 = parseDigit;
@@ -24,24 +23,19 @@ describe("Success with mapP and three parseDigit", () => {
 
   Js.log2("---r1", r1);
 
-  Expect.(
-    test("succeed with " ++ input, () =>
-      expect(actual) |> toEqual(expected)
-    )
-  );
+  Expect.(test("succeed with " ++ input, () =>
+            expect(actual) |> toEqual(expected)
+          ));
 });
 
 describe("Success with mapP to an int", () => {
   let input = "123A";
   let expected = Success(123, "A");
-  let parseThreeDigitsAsString =
-    parseDigit ->>- parseDigit ->>- parseDigit |>> string_of_list;
+  let parseThreeDigitsAsString = parseDigit ->>- parseDigit ->>- parseDigit |>> string_of_list;
   let parseThreeDigitsAsInt = parseThreeDigitsAsString |>> int_of_string;
   let actual = run(parseThreeDigitsAsInt, input);
 
-  Expect.(
-    test("succeed with " ++ input, () =>
-      expect(actual) |> toEqual(expected)
-    )
-  );
+  Expect.(test("succeed with " ++ input, () =>
+            expect(actual) |> toEqual(expected)
+          ));
 });
