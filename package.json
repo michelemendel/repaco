@@ -19,6 +19,7 @@
     "jest": "^24.9.0"
   },
   "dependencies": {
+    "bs-readline": "^1.0.4",
     "tablecloth-bucklescript": "0.0.6"
   }
 }

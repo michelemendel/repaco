@@ -5,6 +5,11 @@ open TC;
    open Combinators;
    open Utils;
     */
+
+/****************************************
+ * See TC.re about why this file exists.
+ * */
+
 describe("ListF - Validating functor rules", () => {
   open Expect;
   module FTest = TestFunctor(ListF);
@@ -86,4 +91,5 @@ describe("EitherF - Validating functor rules", () => {
      test("succeed with ", () =>
        toEqual([(), ()], expect(actuals))
      );
+   });
    }); */

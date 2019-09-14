@@ -6,4 +6,12 @@ let list_of_string = (str: string): list(string) =>
 
 let int_of_string_of_list = xs => xs->string_of_list->int_of_string;
 
-Js.log("ffff");
+/* open Printf;
+   open Readline;
+
+   printf("iiiii\n");
+
+   readline(inp => {
+     printf("---%s\n", inp);
+     close();
+   }); */

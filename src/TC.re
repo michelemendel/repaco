@@ -1,8 +1,13 @@
-open Parsers;
+/* open Parsers; */
 
 /****************************************
- Type classes
- */
+ * Type classes
+ *
+ * NOTE! This module and its test file are part of the
+ * application. I am just playing with module signatures
+ * and type classes from the site
+ * http://blog.shaynefletcher.org/2017/05/more-type-classes-in-ocaml.html?m=1.
+ * */
 
 let id = x => x;
 let (<<) = (f, g, x) => f(g(x));
@@ -25,12 +30,14 @@ module type Functor2 = {
 
 module TestFunctor = (F: Functor) => {
   let test_id = x => assert(F.fmap(id, x) == x);
-  let test_compose = (f, g, x) => assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
+  let test_compose = (f, g, x) =>
+    assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
 };
 
 module TestEitherFunctor = (F: Functor2) => {
   let test_id = x => assert(F.fmap(id, x) == x);
-  let test_compose = (f, g, x) => assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
+  let test_compose = (f, g, x) =>
+    assert(F.fmap(f <.> g, x) == F.fmap(f, F.fmap(g, x)));
 };
 
 module ListF: Functor with type t('a) = list('a) = {
@@ -59,17 +66,66 @@ module EitherF: Functor2 with type t('a, 'b) = either('a, 'b) = {
     | Right(x) => Right(f(x));
 };
 
-module ParserF: Functor with type t('a) = result('a) = {
-  type t('a) = result('a);
-  let fmap = (f, result) =>
-    switch (result) {
-    | Success(vals, rem) => Success(f(vals), rem)
-    | Fail(err) => Fail(err)
-    };
+/* module ParserF: Functor with type t('a) = result('a) = {
+     type t('a) = result('a);
+     let fmap = (f, result) =>
+       switch (result) {
+       | Success(vals, rem) => Success(f(vals), rem)
+       | Fail(err) => Fail(err)
+       };
+   };
+
+   let (<$>) = (x, f) => ParserF.fmap(f, x); */
+
+/*
+ Monoid
+ */
+
+module type Monoid = {
+  type t;
+  let empty: t;
+  let append: (t, t) => t;
 };
 
-let (<$>) = (x, f) => ParserF.fmap(f, x);
+module MonoidUtils = (M: Monoid) => {
+  include M;
+  let (<+>) = (x, y) => append(x, y);
+  let concat = xs => List.fold_left((<+>), empty, xs);
+};
+
+module type TYPE = {type t;};
+
+module ListMonoid = (T: TYPE) : (Monoid with type t = list(T.t)) => {
+  type t = list(T.t);
+  let empty = [];
+  let append = (xs, ys) => xs @ ys;
+};
+
+let concat = (type a, xs) => {
+  module MU =
+    MonoidUtils(
+      (
+        ListMonoid({
+          type t = a;
+        })
+      ),
+    );
+  MU.concat(xs);
+};
 
 /*
  Applicative
  */
+
+module type Applicative = {
+  include Functor;
+  let pure: 'a => t('a);
+  let apply: (t('a => 'b), t('a)) => t('b);
+};
+
+module ListApplicative: Applicative with type t('a) = list('a) = {
+  include ListF;
+  let pure = x => [x];
+  let apply = (fs, xs) =>
+    concat @@ List.map(f => List.map(x => f(x), xs), fs);
+};
